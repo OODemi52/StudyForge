@@ -1,13 +1,13 @@
 import { NativeModules } from 'react-native';
 
-const { ScreenShotManager } = NativeModules;
-
 export const takeScreenshot = async (folderPath: string): Promise<void> => {
+  if (!NativeModules.ScreenShotManager) {
+    throw new Error('ScreenShotManager is not available');
+  }
   try {
-    const result = await ScreenShotManager.takeScreenshots(folderPath);
-    console.log(result);
+    return await NativeModules.ScreenShotManager.takeScreenshots(folderPath);
   } catch (error) {
-    console.log(folderPath);
-    console.error('Error taking screenshots:', error);
+    console.error('Screenshot error:', error);
+    throw error;
   }
 };
