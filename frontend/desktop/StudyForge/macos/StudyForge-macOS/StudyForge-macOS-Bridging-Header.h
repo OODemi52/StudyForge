@@ -20,4 +20,12 @@ RCT_EXTERN_METHOD(takeScreenshots:(NSString *)folderPath
 
 @end
 
+@interface RCT_EXTERN_MODULE(CameraManager, NSObject)
+
+RCT_EXTERN_METHOD(captureFrame:(RCTPromiseResolveBlock)resolver
+                  reject:(RCTPromiseRejectBlock)rejecter)
+
+@end
+
+
 #endif /* StudyForge_Bridging_Header_h */

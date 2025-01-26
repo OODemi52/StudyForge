@@ -6,6 +6,7 @@
 //
 // Based on: https://stackoverflow.com/questions/39691106/programmatically-screenshot-swift-3-macos
 
+import AVFoundation
 import Foundation
 import Cocoa
 
@@ -106,5 +107,60 @@ class ScreenShotManager: NSObject {
         }
 
         resolver("Screenshots saved successfully at \(folderURL.path)")
+    }
+}
+
+@objc(CameraManager)
+class CameraManager: NSObject {
+    private let captureSession = AVCaptureSession()
+    private let output = AVCaptureVideoDataOutput()
+    private var promiseResolver: RCTPromiseResolveBlock?
+    private var promiseRejecter: RCTPromiseRejectBlock?
+    
+    @objc func captureFrame(_ resolve: @escaping RCTPromiseResolveBlock,
+                           reject: @escaping RCTPromiseRejectBlock) {
+        self.promiseResolver = resolve
+        self.promiseRejecter = reject
+        
+        output.setSampleBufferDelegate(self, queue: DispatchQueue(label: "cameraQueue"))
+        
+        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera,
+                                                 for: .video,
+                                                 position: .front),
+              let input = try? AVCaptureDeviceInput(device: device) else {
+            reject("camera_error", "Front camera not available", nil)
+            return
+        }
+        
+        captureSession.addInput(input)
+        captureSession.addOutput(output)
+        captureSession.startRunning()
+    }
+  
+    deinit {
+      captureSession.stopRunning()
+    }
+}
+
+extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(_ output: AVCaptureOutput,
+                      didOutput sampleBuffer: CMSampleBuffer,
+                      from connection: AVCaptureConnection) {
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        let ciImage = CIImage(cvImageBuffer: imageBuffer)
+        let context = CIContext()
+        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return }
+        
+        let nsImage = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
+        guard let tiffData = nsImage.tiffRepresentation,
+              let bitmapRep = NSBitmapImageRep(data: tiffData),
+              let jpegData = bitmapRep.representation(using: .jpeg, properties: [:]) else {
+            promiseRejecter?("image_error", "Failed to convert image", nil)
+            return
+        }
+        
+        let base64String = jpegData.base64EncodedString()
+        promiseResolver?(["base64": base64String])
+        captureSession.stopRunning()
     }
 }
