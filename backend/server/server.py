@@ -1,9 +1,14 @@
 from flask import Flask, request, jsonify
 import base64
-from attention_analyzer import AttentionAnalyzer
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../face-tracking/attention_analyzer.py')))
+
+import attention_analyzer
 
 app = Flask(__name__)
-analyzer = AttentionAnalyzer()
+analyzer = attention_analyzer.AttentionAnalyzer()
 
 @app.route('/')
 def index():
@@ -15,7 +20,7 @@ def handle_detect():
         data = request.json
         image_b64 = data['image']
         
-        # Process frame and get attention analysis
+        # Process frame and get attention analysiss
         result = analyzer.process_frame(image_b64)
         return jsonify(result)
     except Exception as e:
