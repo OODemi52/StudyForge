@@ -42,9 +42,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.title = "StudyForge"
         window.center()
     }
-    
-    func applicationWillTerminate(_ notification: Notification) {
-        // Clean-up code (if needed)
-    }
 }
 
