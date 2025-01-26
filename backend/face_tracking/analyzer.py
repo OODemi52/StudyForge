@@ -74,7 +74,6 @@ class AttentionAnalyzer:
     
     def _calculate_eye_openness(self, points):
         # Calculate vertical distance between top and bottom eye points
-        # This is a simplified metric - you can make it more sophisticated
         points = np.array(points)
         y_min = np.min(points[:, 1])
         y_max = np.max(points[:, 1])
@@ -82,20 +81,8 @@ class AttentionAnalyzer:
     
     def _calculate_attention_score(self, left_eye, right_eye):
         # Implement your attention scoring logic here
-        # This is a basic example - you should enhance this based on your requirements
-        
-        # Check if eyes are open enough
         eye_openness = (left_eye["openness"] + right_eye["openness"]) / 2
-        
-        # You can add more sophisticated metrics here:
-        # - Eye gaze direction
-        # - Head pose
-        # - Blink rate
-        # - etc.
-        
-        # Normalize score between 0 and 1
         score = min(max(eye_openness / 30.0, 0.0), 1.0)
-        
         return score
 
     def __del__(self):

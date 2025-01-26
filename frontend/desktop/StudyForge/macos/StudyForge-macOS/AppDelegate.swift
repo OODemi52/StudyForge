@@ -4,7 +4,6 @@
 //
 //  Created by Demi Daniel on 1/25/25.
 //
-
 import Cocoa
 import Foundation
 import React
@@ -42,10 +41,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.makeKeyAndOrderFront(nil)
         window.title = "StudyForge"
         window.center()
-    }
-    
-    func applicationWillTerminate(_ notification: Notification) {
-        // Clean-up code (if needed)
     }
 }
 
