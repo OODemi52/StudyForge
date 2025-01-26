@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		114BA8CF2D45687900B6FE11 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114BA8CE2D45687300B6FE11 /* AppDelegate.swift */; };
 		114BA8DE2D4587EF00B6FE11 /* ScreenShotManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114BA8DD2D4587EF00B6FE11 /* ScreenShotManager.swift */; };
+		114BA8E12D45E7DD00B6FE11 /* CameraManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 114BA8E02D45E7DD00B6FE11 /* CameraManager.m */; };
+		114BA8E72D45E9FD00B6FE11 /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114BA8E62D45E9FD00B6FE11 /* CameraManager.swift */; };
+		114BA8E92D45F17800B6FE11 /* ScreenShotManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 114BA8E82D45F17800B6FE11 /* ScreenShotManager.m */; };
 		514201522437B4B40078DB4F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 514201512437B4B40078DB4F /* Assets.xcassets */; };
 		514201552437B4B40078DB4F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 514201532437B4B40078DB4F /* Main.storyboard */; };
 		68C426B718287DCC91C2F49D /* libPods-StudyForge-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6565DF543898D6FF0B3A4204 /* libPods-StudyForge-macOS.a */; };
@@ -20,6 +23,9 @@
 		114BA8CE2D45687300B6FE11 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		114BA8D02D45687A00B6FE11 /* StudyForge-macOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StudyForge-macOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		114BA8DD2D4587EF00B6FE11 /* ScreenShotManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenShotManager.swift; sourceTree = "<group>"; };
+		114BA8E02D45E7DD00B6FE11 /* CameraManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CameraManager.m; sourceTree = "<group>"; };
+		114BA8E62D45E9FD00B6FE11 /* CameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
+		114BA8E82D45F17800B6FE11 /* ScreenShotManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenShotManager.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* StudyForge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudyForge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2718EF79058339059E955FC4 /* Pods-StudyForge-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StudyForge-macOS.release.xcconfig"; path = "Target Support Files/Pods-StudyForge-macOS/Pods-StudyForge-macOS.release.xcconfig"; sourceTree = "<group>"; };
 		48FB8757C33E9FDD184A6A4C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -71,6 +77,9 @@
 				514201562437B4B40078DB4F /* Info.plist */,
 				514201592437B4B40078DB4F /* StudyForge.entitlements */,
 				114BA8D02D45687A00B6FE11 /* StudyForge-macOS-Bridging-Header.h */,
+				114BA8E02D45E7DD00B6FE11 /* CameraManager.m */,
+				114BA8E62D45E9FD00B6FE11 /* CameraManager.swift */,
+				114BA8E82D45F17800B6FE11 /* ScreenShotManager.m */,
 			);
 			path = "StudyForge-macOS";
 			sourceTree = "<group>";
@@ -311,7 +320,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				114BA8CF2D45687900B6FE11 /* AppDelegate.swift in Sources */,
+				114BA8E12D45E7DD00B6FE11 /* CameraManager.m in Sources */,
+				114BA8E72D45E9FD00B6FE11 /* CameraManager.swift in Sources */,
 				114BA8DE2D4587EF00B6FE11 /* ScreenShotManager.swift in Sources */,
+				114BA8E92D45F17800B6FE11 /* ScreenShotManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

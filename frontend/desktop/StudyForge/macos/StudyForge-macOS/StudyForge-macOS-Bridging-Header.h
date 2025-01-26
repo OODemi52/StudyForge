@@ -10,22 +10,6 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <React/RCTBridge.h>
-
-
-@interface RCT_EXTERN_MODULE(ScreenShotManager, NSObject)
-
-RCT_EXTERN_METHOD(takeScreenshots:(NSString *)folderPath
-                  resolver:(RCTPromiseResolveBlock)resolver
-                  rejecter:(RCTPromiseRejectBlock)rejecter)
-
-@end
-
-@interface RCT_EXTERN_MODULE(CameraManager, NSObject)
-
-RCT_EXTERN_METHOD(captureFrame:(RCTPromiseResolveBlock)resolver
-                  reject:(RCTPromiseRejectBlock)rejecter)
-
-@end
-
+#import <React/RCTEventEmitter.h>
 
 #endif /* StudyForge_Bridging_Header_h */

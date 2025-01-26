@@ -15,12 +15,15 @@ import {
   useColorScheme,
   View,
   TouchableOpacity,
+  NativeModules,
 } from 'react-native';
 
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
-import { takeScreenshot } from './modules/screenshotModule';
+import { takeScreenshot, takeCameraPhoto } from './modules/nativeModules';
+
+console.log('CameraManager', NativeModules.CameraManager);
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -42,12 +45,33 @@ function App(): React.JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => takeScreenshot('/Users/oodemi/Code/StudyForge/frontend/desktop/StudyForge/screenshots')}
-            >
-              <Text style={{ color: isDarkMode ? Colors.light : Colors.dark }}>Press me</Text>
-            </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={async () => {
+            try {
+              await takeScreenshot('/Users/oodemi/Code/StudyForge/frontend/desktop/StudyForge/screenshots');
+            } catch (error) {
+              console.error('Screenshot error:', error);
+            }
+          }}
+        >
+          <Text style={{ color: isDarkMode ? Colors.light : Colors.dark }}>Take Screenshot</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={async () => {
+            try {
+              const result = await takeCameraPhoto();
+              console.log('Camera photo taken:', result);
+            } catch (error) {
+              console.error('Camera error:', error);
+            }
+          }}
+        >
+          <Text style={{ color: isDarkMode ? Colors.light : Colors.dark }}>Take Pic</Text>
+        </TouchableOpacity>
+
         </View>
       </ScrollView>
     </SafeAreaView>
