@@ -15,3 +15,4 @@ RCT_EXTERN_METHOD(takeScreenshots:(NSString *)folderPath
                   rejecter:(RCTPromiseRejectBlock)reject)
 
 @end
+

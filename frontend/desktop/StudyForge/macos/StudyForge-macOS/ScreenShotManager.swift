@@ -12,6 +12,9 @@ import Cocoa
 
 @objc(ScreenShotManager)
 class ScreenShotManager: NSObject {
+    private static let maxRetryAttempts = 3
+    private var retryCount = 0
+    
     @objc static func requiresMainQueueSetup() -> Bool {
         return true
     }
@@ -20,29 +23,56 @@ class ScreenShotManager: NSObject {
     func takeScreenshots(_ folderPath: String,
                         resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) {
-        // Create directory if it doesn't exist
+        DispatchQueue.main.async {
+            self.handleScreenshotCapture(folderPath: folderPath, resolve: resolve, rejecter: reject)
+        }
+    }
+    
+    private func handleScreenshotCapture(folderPath: String,
+                                       resolve: @escaping RCTPromiseResolveBlock,
+                                       rejecter reject: @escaping RCTPromiseRejectBlock) {
         let folderURL = URL(fileURLWithPath: folderPath, isDirectory: true)
+        
+        // Create directory if it doesn't exist
         do {
             try FileManager.default.createDirectory(at: folderURL,
-                                                 withIntermediateDirectories: true,
-                                                 attributes: nil)
+                                                  withIntermediateDirectories: true,
+                                                  attributes: nil)
         } catch {
             reject("DIRECTORY_ERROR",
                   "Failed to create output directory: \(error.localizedDescription)",
                   error)
             return
         }
-
-        // Request screen capture permission
-        if !CGPreflightScreenCaptureAccess() {
+        
+        // Check screen capture permission
+        if CGPreflightScreenCaptureAccess() {
+            self.captureAndSaveScreenshots(folderURL: folderURL, resolve: resolve, rejecter: reject)
+        } else {
             CGRequestScreenCaptureAccess()
-            reject("PERMISSION_ERROR",
-                  "Screen recording permission is required. Please grant permission in System Preferences and restart the app.",
-                  nil)
-            return
+            
+            // Wait for permission dialog response
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                if CGPreflightScreenCaptureAccess() {
+                    self.captureAndSaveScreenshots(folderURL: folderURL, resolve: resolve, rejecter: reject)
+                } else {
+                    self.retryCount += 1
+                    if self.retryCount <= ScreenShotManager.maxRetryAttempts {
+                        self.handleScreenshotCapture(folderPath: folderPath, resolve: resolve, rejecter: reject)
+                    } else {
+                        self.retryCount = 0
+                        reject("PERMISSION_ERROR",
+                              "Screen recording permission required. Please enable in System Settings > Privacy & Security > Screen Recording.",
+                              nil)
+                    }
+                }
+            }
         }
-
-        // Get active displays
+    }
+    
+    private func captureAndSaveScreenshots(folderURL: URL,
+                                         resolve: @escaping RCTPromiseResolveBlock,
+                                         rejecter reject: @escaping RCTPromiseRejectBlock) {
         var displayCount: UInt32 = 0
         var result = CGGetActiveDisplayList(0, nil, &displayCount)
         guard result == .success else {
@@ -51,10 +81,10 @@ class ScreenShotManager: NSObject {
                   nil)
             return
         }
-
+        
         let activeDisplays = UnsafeMutablePointer<CGDirectDisplayID>.allocate(capacity: Int(displayCount))
         defer { activeDisplays.deallocate() }
-
+        
         result = CGGetActiveDisplayList(displayCount, activeDisplays, &displayCount)
         guard result == .success else {
             reject("DISPLAY_ERROR",
@@ -62,31 +92,30 @@ class ScreenShotManager: NSObject {
                   nil)
             return
         }
-
+        
         var savedFiles: [String] = []
         
-        // Take screenshots
         for index in 0..<Int(displayCount) {
             let displayID = activeDisplays[index]
             let timestamp = Int64(Date().timeIntervalSince1970)
             let fileURL = folderURL.appendingPathComponent("\(timestamp)_\(index).jpg")
-
+            
             guard let screenshot = CGDisplayCreateImage(displayID) else {
                 reject("CAPTURE_ERROR",
                       "Failed to capture display \(index)",
                       nil)
                 return
             }
-
+            
             let bitmapRep = NSBitmapImageRep(cgImage: screenshot)
             guard let jpegData = bitmapRep.representation(using: .jpeg,
-                                                        properties: [.compressionFactor: 1.0]) else {
+                                                        properties: [.compressionFactor: 0.9]) else {
                 reject("CONVERSION_ERROR",
                       "Failed to convert screenshot \(index)",
                       nil)
                 return
             }
-
+            
             do {
                 try jpegData.write(to: fileURL, options: .atomic)
                 savedFiles.append(fileURL.path)
@@ -97,7 +126,8 @@ class ScreenShotManager: NSObject {
                 return
             }
         }
-
+        
+        self.retryCount = 0
         resolve(["files": savedFiles])
     }
 }

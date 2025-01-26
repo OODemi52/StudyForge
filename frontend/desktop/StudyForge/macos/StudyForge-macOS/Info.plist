@@ -35,14 +35,14 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>StudyForge needs screen recording access to capture screenshots</string>
 	<key>NSMainStoryboardFile</key>
 	<string>Main</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSSupportsAutomaticTermination</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>StudyForge needs screen recording access to capture screenshots</string>
 	<key>NSSupportsSuddenTermination</key>
 	<true/>
 </dict>
